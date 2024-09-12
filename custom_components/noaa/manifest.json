@@ -1,11 +1,12 @@
 {
-  "domain": "noaa_integration",
-  "name": "NOAA Integration",
-  "documentation": "https://github.com/turbo5000c/noaa_integration",
-  "dependencies": [],
-  "codeowners": ["@turbo5000c"],
-  "requirements": ["requests"],
-  "iot_class": "cloud_polling",
-  "version": "1.0.0",
-  "config_flow": false
+    "domain": "noaa_integration",
+    "name": "NOAA Integration",
+    "documentation": "https://github.com/turbo5000c/noaa_integration",
+    "dependencies": [],
+    "codeowners": ["@turbo5000c"],
+    "requirements": ["requests"],
+    "iot_class": "cloud_polling",
+    "config_flow": true,
+    "requirements": [],
+    "version": "1.0.0"
 }
