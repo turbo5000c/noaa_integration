@@ -1,11 +1,11 @@
 {
-  "domain": "noaa_integration",  // Unique identifier for your component
-  "name": "NOAA Integration",    // Human-readable name
-  "documentation": "https://github.com/turbo5000c/noaa_integration",  // Link to documentation or GitHub repo
-  "dependencies": [],  // Optional, if you rely on other components
-  "codeowners": ["@turbo5000c"],   // GitHub username of the component's maintainers
-  "requirements": ["requests"],  // External libraries required (e.g., 'requests' for making HTTP requests)
-  "iot_class": "cloud_polling",   // Polls an external API (like NOAA)
-  "version": "1.0.0",            // Version of your integration
-  "config_flow": false            // Set to true if your component uses the Home Assistant UI for configuration
+  "domain": "noaa_integration",
+  "name": "NOAA Integration",
+  "documentation": "https://github.com/turbo5000c/noaa_integration",
+  "dependencies": [],
+  "codeowners": ["@turbo5000c"],
+  "requirements": ["requests"],
+  "iot_class": "cloud_polling",
+  "version": "1.0.0",
+  "config_flow": false
 }
