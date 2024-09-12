@@ -19,13 +19,17 @@ class NOAAKpIndexSensor(SensorEntity):
 
     def update(self):
         try:
-            response = requests.get(API_URL)
+            response = requests.get(API_URL, timeout=10)
+            response.raise_for_status()  # Raise an exception for HTTP errors
             if response.status_code == 200:
                 self._data = response.json()
-                # Get the latest Kp index value (most recent entry)
-                latest_data = self._data[-1]  # Assuming the latest data is the last entry
-                self._state = latest_data.get("k_index", None)
-        except Exception as e:
+                if self._data:  # Ensure data is not empty
+                    # Get the latest Kp index value (most recent entry)
+                    latest_data = self._data[-1]  # Assuming the latest data is the last entry
+                    self._state = latest_data.get("k_index", None)
+                else:
+                    print("No data received from NOAA API.")
+        except requests.exceptions.RequestException as e:
             self._state = None
             print(f"Error fetching NOAA Kp data: {e}")
 
