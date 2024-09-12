@@ -28,3 +28,6 @@ class NOAAKpIndexSensor(SensorEntity):
         except Exception as e:
             self._state = None
             print(f"Error fetching NOAA Kp data: {e}")
+
+def setup_platform(hass, config, add_entities, discovery_info=None):
+    add_entities([NOAAKpIndexSensor("NOAA Kp Index")])
