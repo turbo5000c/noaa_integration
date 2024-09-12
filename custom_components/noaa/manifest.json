@@ -6,7 +6,7 @@
     "codeowners": ["@turbo5000c"],
     "requirements": ["requests"],
     "iot_class": "cloud_polling",
-    "config_flow": true,
+    "config_flow": false,
     "requirements": [],
     "version": "1.0.0"
 }
