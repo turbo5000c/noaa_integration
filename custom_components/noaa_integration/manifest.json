@@ -6,5 +6,7 @@
   "codeowners": ["@turbo5000c"],
   "config_flow": false,
   "requirements": ["requests"],
-  "version": "1.0.12"
+  "version": "1.0.12",
+  "issue_tracker": "https://github.com/turbo5000c/noaa_integration/issues",
+  "iot_class": "cloud_polling"
 }
