@@ -29,4 +29,4 @@ class MyWeatherSensor(Entity):
         """Fetch new state data for the sensor."""
         response = requests.get('https://services.swpc.noaa.gov/json/geospace/geospace_dst_1_hour.json')
         data = response.json()
-        self._state = data[0].get('dist', 'unknown')
+        self._state = data[0].get('dst', '100')
