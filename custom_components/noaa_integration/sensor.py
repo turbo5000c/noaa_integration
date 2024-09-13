@@ -6,7 +6,7 @@ DOMAIN = 'noaa_integration'
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the MyWeather sensor."""
-    add_entities([MyWeatherSensor()])
+    add_entities([MyWeatherSensor(), PlanetaryKIndexSensor()])
 
 class MyWeatherSensor(Entity):
     """Representation of a MyWeather sensor."""
@@ -53,10 +53,5 @@ class PlanetaryKIndexSensor(Entity):
         response = requests.get('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json')
         if response.status_code == 200:
             data = response.json()
-            if data and isinstance(data, list):
-                # Assuming you want the latest Kp index, get the most recent entry.
-                self._state = data[-1].get('kp_index', 'unknown')
-            else:
-                self._state = 'unknown'
-        else:
-            self._state = 'error'
+            self._state = data[-1].get('kp_index', 'unknown')
+
