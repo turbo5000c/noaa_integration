@@ -1,0 +1,8 @@
+{
+    "name": "NOAA Intergration",
+    "content_in_root": false,
+	"country": "USA",
+    "render_readme": false,
+    "homeassistant": "2024.9.1",
+    "zip_release": false
+}
