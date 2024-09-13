@@ -27,6 +27,6 @@ class MyWeatherSensor(Entity):
 
     def update(self):
         """Fetch new state data for the sensor."""
-        response = requests.get('https://api.weatherapi.com/v1/current.json?key=your_api_key&q=London')
+        response = requests.get('https://services.swpc.noaa.gov/json/geospace/geospace_dst_1_hour.json')
         data = response.json()
-        self._state = data['current']['temp_c']
+        self._state = data[0].get('dist', 'unknown')
