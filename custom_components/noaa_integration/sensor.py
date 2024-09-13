@@ -18,7 +18,7 @@ class MyWeatherSensor(Entity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return 'My Weather Temperature'
+        return 'Geomagnetic Storm'
 
     @property
     def state(self):
@@ -29,4 +29,34 @@ class MyWeatherSensor(Entity):
         """Fetch new state data for the sensor."""
         response = requests.get('https://services.swpc.noaa.gov/json/geospace/geospace_dst_1_hour.json')
         data = response.json()
-        self._state = data[0].get('dst', '100')
+        self._state = data[0].get('dst', 'Error')
+
+class PlanetaryKIndexSensor(Entity):
+    """Representation of the Planetary K-index sensor."""
+
+    def __init__(self):
+        """Initialize the Planetary K-index sensor."""
+        self._state = None
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return 'NOAA Planetary K-index'
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._state
+
+    def update(self):
+        """Fetch new state data for the K-index."""
+        response = requests.get('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json')
+        if response.status_code == 200:
+            data = response.json()
+            if data and isinstance(data, list):
+                # Assuming you want the latest Kp index, get the most recent entry.
+                self._state = data[-1].get('kp_index', 'unknown')
+            else:
+                self._state = 'unknown'
+        else:
+            self._state = 'error'
