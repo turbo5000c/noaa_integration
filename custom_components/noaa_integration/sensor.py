@@ -1,4 +1,3 @@
-# sensor.py
 import requests
 from homeassistant.helpers.entity import Entity
 
@@ -6,7 +5,11 @@ DOMAIN = 'noaa_integration'
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Geomagnetic Storm sensor."""
-    add_entities([GeomagneticSensor(), PlanetaryKIndexSensor(), PlanetaryKIndexSensorRating()])
+    # Instantiate the processor
+    planetary_k_index_rating = PlanetaryKIndexSensorRating()
+
+    # Pass the processor to the sensor that will use it
+    add_entities([GeomagneticSensor(), PlanetaryKIndexSensor(planetary_k_index_rating), planetary_k_index_rating])
 
 class GeomagneticSensor(Entity):
     """Representation of a MyWeather sensor."""
@@ -34,9 +37,10 @@ class GeomagneticSensor(Entity):
 class PlanetaryKIndexSensor(Entity):
     """Representation of the Planetary K-index sensor."""
 
-    def __init__(self):
-        """Initialize the Planetary K-index sensor."""
+    def __init__(self, processor):
+        """Initialize the Planetary K-index sensor and pass in the processor."""
         self._state = None
+        self.processor = processor  # Store the processor
 
     @property
     def name(self):
@@ -54,17 +58,16 @@ class PlanetaryKIndexSensor(Entity):
         if response.status_code == 200:
             data = response.json()
             self._state = data[-1].get('kp_index', 'unknown')
+            # Call the processor to handle the solar flux value
             self.processor.process_solar_flux(self._state)
 
-
 class PlanetaryKIndexSensorRating(Entity):
-    """Representation of the Planetary K-index sensor."""
+    """Representation of the Planetary K-index Rating sensor."""
 
     def __init__(self):
         """Initialize the Planetary K-index Rating."""
         self._state = None
         self._rating = None
-
 
     @property
     def state(self):
@@ -79,7 +82,7 @@ class PlanetaryKIndexSensorRating(Entity):
     def process_solar_flux(self, solar_flux_value):
         """Process the Solar Flux value."""
         self._state = solar_flux_value
-        print(f"Processed solar flux value: {self._processed_state}")
+        print(f"Processed solar flux value: {self._state}")
 
         # Determine the rating based on the K-index value
         if self._state != 'unknown':  # Ensure valid state
