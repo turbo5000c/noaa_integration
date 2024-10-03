@@ -17,7 +17,12 @@ class GeoelectricFieldImageEntity(ImageEntity):
         """Initialize the image entity."""
         super().__init__(hass, "Geoelectric Field Image")
         self._image_url = None
-
+        
+    @property
+    def name(self):
+        """Return the name of the interpretation sensor."""
+        return 'Geomagnetic Storm Map'
+    
     @property
     def image_url(self) -> str:
         """Return the URL of the latest geoelectric field image."""
