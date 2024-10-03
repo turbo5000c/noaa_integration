@@ -17,7 +17,6 @@ class GeoelectricFieldImageSensor(Entity):
     def __init__(self):
         """Initialize the Geoelectric Field Image sensor."""
         self._image_url = None
-        self._latest_image_time = None
 
     @property
     def name(self):
@@ -31,19 +30,9 @@ class GeoelectricFieldImageSensor(Entity):
 
     def update(self):
         """Fetch the latest geoelectric field image."""
-        base_url = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/'
-        
-        # Dynamically form the latest image URL using the current date/time
-        now = datetime.utcnow()
-        latest_timestamp = now.strftime('%Y%m%dT%H%M%S')
-
-        # Try fetching the image in reverse by checking the latest timestamps
-        for i in range(5):
-            image_url = f"{base_url}{latest_timestamp}-7-emap-empirical-EMTF-2022.12-v2022.12.png"
-            response = requests.get(image_url)
-            if response.status_code == 200:
-                self._image_url = image_url
-                self._latest_image_time = latest_timestamp
-                break
-            # Decrement the timestamp in case the exact match isn't available
-            latest_timestamp = (now.replace(second=now.second - (i + 1))).strftime('%Y%m%dT%H%M%S')
+        base_url = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/latest.png'
+        image_url = f"{base_url}"
+        response = requests.get(image_url)
+        if response.status_code == 200:
+            self._image_url = image_url
+            
