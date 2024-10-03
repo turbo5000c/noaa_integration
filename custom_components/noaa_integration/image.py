@@ -1,16 +1,16 @@
 import requests
-from homeassistant.helpers.entity import Image
+from homeassistant.components.image import ImageEntity
 
 DOMAIN = 'noaa_integration'
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Geoelectric Field Image entity."""
-    geoelectric_image_entity = GeoelectricFieldImage()
+    geoelectric_image_entity = GeoelectricFieldImageEntity()
 
     # Add the geoelectric image entity
     add_entities([geoelectric_image_entity])
 
-class GeoelectricFieldImage(Image):
+class GeoelectricFieldImageEntity(ImageEntity):
     """Representation of the Geoelectric Field Image."""
 
     def __init__(self):
@@ -24,7 +24,7 @@ class GeoelectricFieldImage(Image):
         return 'Geoelectric Field Image'
 
     @property
-    def image_url(self):
+    def image_url(self) -> str:
         """Return the URL of the latest geoelectric field image."""
         return self._image_url
 
