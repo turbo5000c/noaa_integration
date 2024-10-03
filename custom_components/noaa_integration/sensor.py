@@ -6,7 +6,7 @@ DOMAIN = 'noaa_integration'
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Geomagnetic Storm sensor."""
-    add_entities([MyWeatherSensor(), PlanetaryKIndexSensor()])
+    add_entities([GeomagneticSensor(), PlanetaryKIndexSensor(), PlanetaryKIndexSensorRating()])
 
 class GeomagneticSensor(Entity):
     """Representation of a MyWeather sensor."""
