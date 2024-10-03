@@ -15,14 +15,8 @@ class GeoelectricFieldImageEntity(ImageEntity):
 
     def __init__(self, hass):
         """Initialize the image entity."""
-        super().__init__()
-        self.hass = hass
+        super().__init__(hass, "Geoelectric Field Image")
         self._image_url = None
-
-    @property
-    def name(self):
-        """Return the name of the entity."""
-        return 'Geoelectric Field Image'
 
     @property
     def image_url(self) -> str:
