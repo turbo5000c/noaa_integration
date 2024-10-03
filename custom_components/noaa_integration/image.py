@@ -1,6 +1,5 @@
 import requests
 from homeassistant.helpers.entity import Entity
-from datetime import datetime
 
 DOMAIN = 'noaa_integration'
 
@@ -30,9 +29,7 @@ class GeoelectricFieldImageSensor(Entity):
 
     def update(self):
         """Fetch the latest geoelectric field image."""
-        base_url = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/latest.png'
-        image_url = f"{base_url}"
+        image_url = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/latest.png'
         response = requests.get(image_url)
         if response.status_code == 200:
             self._image_url = image_url
-            
