@@ -1,5 +1,6 @@
 import requests
 from homeassistant.components.image import ImageEntity
+from homeassistant.helpers.entity import DeviceInfo
 
 DOMAIN = 'noaa_integration'
 
@@ -15,19 +16,34 @@ class GeoelectricFieldImageEntity(ImageEntity):
 
     def __init__(self, hass):
         """Initialize the image entity."""
-        super().__init__(hass, "Geoelectric Field Image")
-        self._image_url = None
-        
+        super().__init__()
+        self.hass = hass
+        self._image_url = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/latest.png'
+
     @property
     def name(self):
-        """Return the name of the interpretation sensor."""
-        return 'Geomagnetic Storm Map'
-    
+        """Return the name of the entity."""
+        return 'Geoelectric Field Image'
+
+    @property
+    def unique_id(self):
+        """Return a unique ID for this entity."""
+        return 'noaa_geoelectric_image'
+
     @property
     def image_url(self) -> str:
         """Return the URL of the latest geoelectric field image."""
         return self._image_url
 
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device information."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, "noaa_geoelectric_field")},
+            name="NOAA Geoelectric Field",
+            manufacturer="NOAA"
+        )
+
     def update(self):
-        """Fetch the latest geoelectric field image."""
+        """Update the latest image URL."""
         self._image_url = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/latest.png'
