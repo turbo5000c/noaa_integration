@@ -5,18 +5,20 @@ DOMAIN = 'noaa_integration'
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Geomagnetic Storm sensor."""
-    # Instantiate the processor
+    # Instantiate the processor for K-index and Dst interpretation
     planetary_k_index_rating = PlanetaryKIndexSensorRating()
+    geomagnetic_interpretation = GeomagneticSensorInterpretation()
 
-    # Pass the processor to the sensor that will use it
-    add_entities([GeomagneticSensor(), PlanetaryKIndexSensor(planetary_k_index_rating), planetary_k_index_rating])
+    # Pass the processors to the sensors that will use them
+    add_entities([GeomagneticSensor(geomagnetic_interpretation), PlanetaryKIndexSensor(planetary_k_index_rating), planetary_k_index_rating, geomagnetic_interpretation])
 
 class GeomagneticSensor(Entity):
-    """Representation of a MyWeather sensor."""
+    """Representation of the Geomagnetic Storm sensor."""
 
-    def __init__(self):
+    def __init__(self, interpreter):
         """Initialize the sensor."""
         self._state = None
+        self.interpreter = interpreter  # Store the interpreter
 
     @property
     def name(self):
@@ -31,8 +33,48 @@ class GeomagneticSensor(Entity):
     def update(self):
         """Fetch new state data for the sensor."""
         response = requests.get('https://services.swpc.noaa.gov/json/geospace/geospace_dst_1_hour.json')
-        data = response.json()
-        self._state = data[0].get('dst', 'Error')
+        if response.status_code == 200:
+            data = response.json()
+            self._state = data[0].get('dst', 'Error')
+            self.interpreter.process_geomagnetic_data(self._state)
+
+class GeomagneticSensorInterpretation(Entity):
+    """Representation of the Geomagnetic Storm Interpretation sensor."""
+
+    def __init__(self):
+        """Initialize the interpretation sensor."""
+        self._state = None
+        self._interpretation = None
+
+    @property
+    def state(self):
+        """Return the interpretation of the geomagnetic storm."""
+        return self._interpretation
+
+    @property
+    def name(self):
+        """Return the name of the interpretation sensor."""
+        return 'Geomagnetic Storm Interpretation'
+
+    def process_geomagnetic_data(self, dst_value):
+        """Process the Dst value and determine the interpretation."""
+        self._state = dst_value
+        print(f"Processed Dst value: {self._state}")
+
+        # Interpretation based on the Dst value
+        if isinstance(self._state, (int, float)):  # Ensure it's a valid numeric value
+            if self._state > -20:
+                self._interpretation = 'No Storm (Quiet conditions)'
+            elif -20 > self._state >= -50:
+                self._interpretation = 'Minor Storm'
+            elif -50 > self._state >= -100:
+                self._interpretation = 'Moderate Storm'
+            elif -100 > self._state >= -200:
+                self._interpretation = 'Strong Storm'
+            else:
+                self._interpretation = 'Severe Storm'
+        else:
+            self._interpretation = 'Error: Invalid Dst value'
 
 class PlanetaryKIndexSensor(Entity):
     """Representation of the Planetary K-index sensor."""
