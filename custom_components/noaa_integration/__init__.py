@@ -14,4 +14,7 @@ def setup(hass, config):
     # Load the platform for sensor
     discovery.load_platform(hass, 'sensor', DOMAIN, {}, config)
 
+    # Load the platform for image
+    discovery.load_platform(hass, 'image', DOMAIN, {}, config)
+    
     return True
