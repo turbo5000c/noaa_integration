@@ -16,9 +16,13 @@ class GeoelectricFieldImageEntity(ImageEntity):
 
     def __init__(self, hass):
         """Initialize the image entity."""
-        super().__init__(hass=hass, name="Geoelectric Field Image")
-        self.hass = hass
+        super().__init__(hass)
         self._image_url = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/latest.png'
+
+    @property
+    def name(self):
+        """Return the name of the entity."""
+        return 'Geoelectric Field Image'
 
     @property
     def image_url(self) -> str:
