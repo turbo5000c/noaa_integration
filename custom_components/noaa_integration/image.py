@@ -1,7 +1,4 @@
 import requests
-from PIL import Image
-from io import BytesIO
-import matplotlib.pyplot as plt
 from homeassistant.helpers.entity import Entity
 from datetime import datetime
 
@@ -47,18 +44,6 @@ class GeoelectricFieldImageSensor(Entity):
             if response.status_code == 200:
                 self._image_url = image_url
                 self._latest_image_time = latest_timestamp
-                self.show_image(image_url)
                 break
             # Decrement the timestamp in case the exact match isn't available
             latest_timestamp = (now.replace(second=now.second - (i + 1))).strftime('%Y%m%dT%H%M%S')
-
-    def show_image(self, url):
-        """Display the image."""
-        response = requests.get(url)
-        if response.status_code == 200:
-            img = Image.open(BytesIO(response.content))
-            plt.imshow(img)
-            plt.axis('off')  # Hide axes for image
-            plt.show()
-        else:
-            print(f"Failed to retrieve image: {response.status_code}")
