@@ -23,7 +23,7 @@ class GeoelectricFieldImageSensor(Entity):
         return 'Geoelectric Field Image'
 
     @property
-    def state(self):
+    def entity_picture(self):
         """Return the URL of the latest image."""
         return self._image_url
 
