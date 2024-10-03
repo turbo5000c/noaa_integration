@@ -37,29 +37,16 @@ class PlanetaryKIndexSensor(Entity):
     def __init__(self):
         """Initialize the Planetary K-index sensor."""
         self._state = None
-        self._rating = None  # To store the rating based on the K-index
 
     @property
     def name(self):
         """Return the name of the sensor."""
-        return 'NOAA Planetary K-index'
+        return 'Planetary K-index'
 
     @property
     def state(self):
         """Return the state of the sensor."""
         return self._state
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return 'NOAA Planetary K-index Rating'
-
-    @property
-    def extra_state_attributes(self):
-        """Return additional state attributes, such as the rating."""
-        return {
-            'rating': self._rating  # Include rating as an additional attribute
-        }
 
     def update(self):
         """Fetch new state data for the K-index."""
@@ -67,14 +54,40 @@ class PlanetaryKIndexSensor(Entity):
         if response.status_code == 200:
             data = response.json()
             self._state = data[-1].get('kp_index', 'unknown')
+            self.processor.process_solar_flux(self._state)
 
-            # Determine the rating based on the K-index value
-            if self._state != 'unknown':  # Ensure valid state
-                if self._state < 2:
-                    self._rating = 'low'
-                elif 2 <= self._state < 5:
-                    self._rating = 'moderate'
-                else:
-                    self._rating = 'high'
+
+class PlanetaryKIndexSensorRating(Entity):
+    """Representation of the Planetary K-index sensor."""
+
+    def __init__(self):
+        """Initialize the Planetary K-index Rating."""
+        self._state = None
+        self._rating = None
+
+
+    @property
+    def state(self):
+        """Return the state of the sensor rating."""
+        return self._rating
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return 'Planetary K-index Rating'
+
+    def process_solar_flux(self, solar_flux_value):
+        """Process the Solar Flux value."""
+        self._state = solar_flux_value
+        print(f"Processed solar flux value: {self._processed_state}")
+
+        # Determine the rating based on the K-index value
+        if self._state != 'unknown':  # Ensure valid state
+            if self._state < 2:
+                self._rating = 'low'
+            elif 2 <= self._state < 5:
+                self._rating = 'moderate'
             else:
-                self._rating = 'unknown'
+                self._rating = 'high'
+        else:
+            self._rating = 'unknown'
