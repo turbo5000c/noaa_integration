@@ -5,10 +5,10 @@ from homeassistant.helpers.entity import Entity
 DOMAIN = 'noaa_integration'
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
-    """Set up the MyWeather sensor."""
+    """Set up the Geomagnetic Storm sensor."""
     add_entities([MyWeatherSensor(), PlanetaryKIndexSensor()])
 
-class MyWeatherSensor(Entity):
+class GeomagneticSensor(Entity):
     """Representation of a MyWeather sensor."""
 
     def __init__(self):
