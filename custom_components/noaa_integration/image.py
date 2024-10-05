@@ -4,7 +4,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from datetime import timedelta, datetime
 
 DOMAIN = 'noaa_integration'
-SCAN_INTERVAL = timedelta(minutes=1)  # Update the image every 5 minutes
+SCAN_INTERVAL = timedelta(minutes=5)  # Update the image every 5 minutes
 
 BASE_IMAGE_URL = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/latest.png'
 
@@ -30,7 +30,7 @@ class GeoelectricFieldImageEntity(ImageEntity):
         return 'Geoelectric Field Image'
 
     @property
-    def image_url(self) -> str:
+    def entity_picture(self):
         """Return the URL of the latest geoelectric field image."""
         return self._image_url
 
@@ -56,12 +56,9 @@ class GeoelectricFieldImageEntity(ImageEntity):
     async def async_update(self):
         """Fetch and update the latest image content asynchronously."""
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(self._image_url) as response:
-                    if response.status == 200:
-                        self._image_url = self.get_cache_busted_url()  # Update the URL with cache busting
-                    else:
-                        print(f"Error fetching image: {response.status}")
+            # Fetch the image and update with cache busting
+            self._image_url = self.get_cache_busted_url()
+            self.async_write_ha_state()  # Notify Home Assistant of the state change
         except aiohttp.ClientError as e:
             print(f"Error during image update: {e}")
 
