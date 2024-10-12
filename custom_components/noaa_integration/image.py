@@ -1,8 +1,12 @@
-import requests
+import aiohttp
 from homeassistant.components.image import ImageEntity
 from homeassistant.helpers.entity import DeviceInfo
+from datetime import timedelta, datetime
 
 DOMAIN = 'noaa_integration'
+SCAN_INTERVAL = timedelta(minutes=5)  # Update the image every 5 minutes
+
+BASE_IMAGE_URL = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/latest.png'
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Geoelectric Field Image entity."""
@@ -17,7 +21,8 @@ class GeoelectricFieldImageEntity(ImageEntity):
     def __init__(self, hass):
         """Initialize the image entity."""
         super().__init__(hass)
-        self._image_url = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/latest.png'
+        self.hass = hass
+        self._image_url = self.get_cache_busted_url()
 
     @property
     def name(self):
@@ -25,7 +30,7 @@ class GeoelectricFieldImageEntity(ImageEntity):
         return 'Geoelectric Field Image'
 
     @property
-    def image_url(self) -> str:
+    def entity_picture(self):
         """Return the URL of the latest geoelectric field image."""
         return self._image_url
 
@@ -43,6 +48,27 @@ class GeoelectricFieldImageEntity(ImageEntity):
             manufacturer="NOAA"
         )
 
-    def update(self):
-        """Update the latest image URL."""
-        self._image_url = 'https://services.swpc.noaa.gov/images/animations/geoelectric/InterMagEarthScope/EmapGraphics_1m/latest.png'
+    def get_cache_busted_url(self):
+        """Add a timestamp to the URL to prevent caching."""
+        timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+        return f"{BASE_IMAGE_URL}?t={timestamp}"
+
+    async def async_update(self):
+        """Fetch and update the latest image content asynchronously."""
+        try:
+            # Fetch the image and update with cache busting
+            self._image_url = self.get_cache_busted_url()
+            self.async_write_ha_state()  # Notify Home Assistant of the state change
+        except aiohttp.ClientError as e:
+            print(f"Error during image update: {e}")
+
+    async def async_image(self) -> bytes:
+        """Return the bytes of the latest image."""
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self._image_url) as response:
+                    if response.status == 200:
+                        return await response.read()
+        except aiohttp.ClientError as e:
+            print(f"Error fetching image bytes: {e}")
+        return b""
