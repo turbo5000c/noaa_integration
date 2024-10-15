@@ -1,6 +1,6 @@
 {
   "domain": "noaa_integration",
-  "name": "NOAA Kp Index",
+  "name": "NOAA Integration",
   "documentation": "https://github.com/turbo5000c/noaa_integration",
   "dependencies": [],
   "codeowners": ["@turbo5000c"],

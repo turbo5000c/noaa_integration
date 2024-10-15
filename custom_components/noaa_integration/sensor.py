@@ -59,7 +59,7 @@ class GeomagneticSensorInterpretation(Entity):
     def process_geomagnetic_data(self, dst_value):
         """Process the Dst value and determine the interpretation."""
         self._state = dst_value
-        print(f"Processed Dst value: {self._state}")
+        #print(f"Processed Dst value: {self._state}")
 
         # Interpretation based on the Dst value
         if isinstance(self._state, (int, float)):  # Ensure it's a valid numeric value
@@ -124,7 +124,7 @@ class PlanetaryKIndexSensorRating(Entity):
     def process_solar_flux(self, solar_flux_value):
         """Process the Solar Flux value."""
         self._state = solar_flux_value
-        print(f"Processed solar flux value: {self._state}")
+        #print(f"Processed solar flux value: {self._state}")
 
         # Determine the rating based on the K-index value
         if self._state != 'unknown':  # Ensure valid state
