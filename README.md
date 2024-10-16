@@ -1,4 +1,4 @@
-# NOAA Information and Stats
+# NOAA HACS Integration for Solar Data
 
 In your configuration.yaml file, add the custom sensor configuration:
 
