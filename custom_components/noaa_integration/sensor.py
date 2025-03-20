@@ -1,7 +1,9 @@
 import requests
 from homeassistant.helpers.entity import Entity
+from datetime import timedelta, datetime
 
 DOMAIN = 'noaa_integration'
+SCAN_INTERVAL = timedelta(minutes=5)  # Update the image every 5 minutes
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Geomagnetic Storm sensor."""
